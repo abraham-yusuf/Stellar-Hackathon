@@ -20,7 +20,7 @@ Stellar is a particularly strong place to build for this shift. It gives develop
 3. Stellar testnet/mainnet interaction Your project must submit, consume, or otherwise integrate real Stellar testnet or mainnet transactions.
 
 ## Inspiration & Ideas
-Need a spark? Check out the [Ideas & Inspiration tab](https://dorahacks.io/hackathon/stellar-agents-x402-stripe-mpp/ideas-&-inspiration)
+Need a spark? Check out the [Ideas & Inspiration tab](./Resources#ideas--inspiration)
 
 ## $10,000 Prize Pool
 This hackathon features a single open innovation track with awards for the top projects:
