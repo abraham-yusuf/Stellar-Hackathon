@@ -21,7 +21,7 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "module": "esnext",
-    "moduleResolution": "node"
+    "moduleResolution": "bundler"
   },
   "include": [
     "next-env.d.ts",
