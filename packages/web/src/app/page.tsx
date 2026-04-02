@@ -41,8 +41,8 @@ export default async function HomePage() {
   const stats = await getStats();
 
   return (
-    <div className="mx-auto flex max-w-7xl flex-col gap-20 px-6 py-12 md:py-20">
-      <section className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/80 px-8 py-14 shadow-glow md:px-12">
+    <div className="mx-auto flex max-w-7xl flex-col gap-14 px-4 py-8 sm:px-6 md:gap-20 md:py-20">
+      <section className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/80 px-5 py-10 shadow-glow sm:px-8 sm:py-14 md:px-12">
         <div className="absolute inset-0 bg-grid bg-[size:36px_36px] opacity-20" />
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-purple-400/70 to-transparent" />
         <div className="relative grid gap-12 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-end">
@@ -50,10 +50,10 @@ export default async function HomePage() {
             <div className="inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-purple-200">
               Hackathon demo
             </div>
-            <h1 className="mt-6 max-w-3xl text-5xl font-semibold tracking-tight text-white md:text-7xl">
+            <h1 className="mt-6 max-w-3xl text-4xl font-semibold tracking-tight text-white sm:text-5xl md:text-7xl">
               Web Search for AI Agents
             </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-gray-300 md:text-xl">
+            <p className="mt-6 max-w-2xl text-base leading-7 text-gray-300 sm:text-lg sm:leading-8 md:text-xl">
               Pay <span className="font-semibold text-white">0.01 USDC per query</span> via x402 on Stellar and return structured web search results for agents, dashboards, and tools.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-4">
@@ -78,9 +78,9 @@ export default async function HomePage() {
       </section>
 
       <section className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_420px]">
-        <div className="rounded-3xl border border-white/10 bg-slate-950/70 p-8">
+        <div className="rounded-3xl border border-white/10 bg-slate-950/70 p-5 sm:p-8">
           <p className="text-sm uppercase tracking-[0.28em] text-purple-300">How it works</p>
-          <h2 className="mt-3 text-3xl font-semibold text-white">Request → 402 → pay → results</h2>
+          <h2 className="mt-3 text-2xl font-semibold text-white sm:text-3xl">Request → 402 → pay → results</h2>
           <div className="mt-8 grid gap-4 md:grid-cols-3">
             {[
               ["Request", "Your agent calls the StellarSearch endpoint or MCP tool with a standard search query."],
@@ -95,9 +95,9 @@ export default async function HomePage() {
           </div>
         </div>
 
-        <div className="rounded-3xl border border-white/10 bg-slate-950/70 p-8">
+        <div className="rounded-3xl border border-white/10 bg-slate-950/70 p-5 sm:p-8">
           <p className="text-sm uppercase tracking-[0.28em] text-purple-300">Stats</p>
-          <h2 className="mt-3 text-3xl font-semibold text-white">Network snapshot</h2>
+          <h2 className="mt-3 text-2xl font-semibold text-white sm:text-3xl">Network snapshot</h2>
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
             <StatCard label="Total Queries" value={stats.totalQueries} />
             <StatCard label="Price" value="0.01 USDC" />
@@ -110,9 +110,9 @@ export default async function HomePage() {
       <LiveFeed />
 
       <section className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-3xl border border-white/10 bg-slate-950/70 p-8">
+        <div className="rounded-3xl border border-white/10 bg-slate-950/70 p-5 sm:p-8">
           <p className="text-sm uppercase tracking-[0.28em] text-purple-300">Code example</p>
-          <h2 className="mt-3 text-3xl font-semibold text-white">Drop into scripts or agent runtimes</h2>
+          <h2 className="mt-3 text-2xl font-semibold text-white sm:text-3xl">Drop into scripts or agent runtimes</h2>
           <div className="mt-6 space-y-4">
             <div className="rounded-2xl border border-white/10 bg-black/40 p-4">
               <p className="mb-3 text-xs uppercase tracking-[0.24em] text-gray-500">curl</p>
@@ -125,9 +125,9 @@ export default async function HomePage() {
           </div>
         </div>
 
-        <div className="rounded-3xl border border-white/10 bg-slate-950/70 p-8">
+        <div className="rounded-3xl border border-white/10 bg-slate-950/70 p-5 sm:p-8">
           <p className="text-sm uppercase tracking-[0.28em] text-purple-300">Use cases</p>
-          <h2 className="mt-3 text-3xl font-semibold text-white">Built for paid context retrieval</h2>
+          <h2 className="mt-3 text-2xl font-semibold text-white sm:text-3xl">Built for paid context retrieval</h2>
           <div className="mt-6 space-y-4 text-sm leading-7 text-gray-300">
             <div className="rounded-2xl border border-white/10 bg-white/5 p-4">Agentic research with predictable query pricing and Stellar-native settlement.</div>
             <div className="rounded-2xl border border-white/10 bg-white/5 p-4">MCP integrations where each search call can be paid just in time.</div>
@@ -136,7 +136,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <footer className="flex flex-col gap-4 rounded-3xl border border-white/10 bg-slate-950/70 px-8 py-6 text-sm text-gray-400 md:flex-row md:items-center md:justify-between">
+      <footer className="flex flex-col gap-4 rounded-3xl border border-white/10 bg-slate-950/70 px-5 py-6 text-sm text-gray-400 sm:px-8 md:flex-row md:items-center md:justify-between">
         <p>StellarSearch turns web search into a composable paid primitive for agents.</p>
         <div className="flex flex-wrap items-center gap-4">
           <a href="https://github.com/abraham-yusuf/Stellar-Hackathon" target="_blank" rel="noreferrer" className="transition hover:text-white">GitHub</a>
