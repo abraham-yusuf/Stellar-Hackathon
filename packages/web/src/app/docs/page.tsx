@@ -54,17 +54,18 @@ const curlExample = `curl "http://localhost:3001/search/testnet?q=stellar%20x402
 
 export default function DocsPage() {
   return (
-    <div className="mx-auto flex max-w-6xl flex-col gap-8 px-6 py-14 md:py-20">
-      <section className="rounded-3xl border border-white/10 bg-slate-950/80 p-8 shadow-glow">
+    <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-10 sm:px-6 md:py-20">
+      <section className="rounded-3xl border border-white/10 bg-slate-950/80 p-5 shadow-glow sm:p-8">
         <p className="text-sm uppercase tracking-[0.28em] text-purple-300">Documentation</p>
-        <h1 className="mt-3 text-4xl font-semibold text-white">API and MCP reference</h1>
+        <h1 className="mt-3 text-3xl font-semibold text-white sm:text-4xl">API and MCP reference</h1>
         <p className="mt-4 max-w-3xl text-sm leading-7 text-gray-300">
           StellarSearch exposes paid search endpoints over HTTP and a local MCP server that wraps them with x402 payment handling on Stellar.
         </p>
       </section>
 
       <section className="overflow-hidden rounded-3xl border border-white/10 bg-slate-950/70">
-        <table className="min-w-full divide-y divide-white/10 text-left text-sm">
+        <div className="overflow-x-auto">
+          <table className="min-w-[680px] divide-y divide-white/10 text-left text-sm">
           <thead className="bg-white/5 text-xs uppercase tracking-[0.24em] text-gray-400">
             <tr>
               <th className="px-5 py-4">Method</th>
@@ -81,11 +82,12 @@ export default function DocsPage() {
               </tr>
             ))}
           </tbody>
-        </table>
+          </table>
+        </div>
       </section>
 
       <section className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-3xl border border-white/10 bg-slate-950/70 p-8">
+        <div className="rounded-3xl border border-white/10 bg-slate-950/70 p-5 sm:p-8">
           <p className="text-sm uppercase tracking-[0.24em] text-gray-400">Query params</p>
           <ul className="mt-4 space-y-3 text-sm text-gray-300">
             <li><span className="font-mono text-white">q</span> — required search query string</li>
@@ -93,7 +95,7 @@ export default function DocsPage() {
             <li><span className="font-mono text-white">freshness</span> — optional upstream freshness filter</li>
           </ul>
         </div>
-        <div className="rounded-3xl border border-white/10 bg-slate-950/70 p-8">
+        <div className="rounded-3xl border border-white/10 bg-slate-950/70 p-5 sm:p-8">
           <p className="text-sm uppercase tracking-[0.24em] text-gray-400">Cost</p>
           <p className="mt-4 text-sm leading-7 text-gray-300">
             Each search query costs <span className="font-semibold text-white">0.01 USDC</span> on Stellar. Browser demos can bypass the paywall locally by setting <span className="font-mono text-white">PAYWALL_DISABLED=true</span> on the API server.
@@ -102,22 +104,22 @@ export default function DocsPage() {
       </section>
 
       <section className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-3xl border border-white/10 bg-slate-950/70 p-8">
+        <div className="rounded-3xl border border-white/10 bg-slate-950/70 p-5 sm:p-8">
           <p className="text-sm uppercase tracking-[0.24em] text-gray-400">JSON response example</p>
           <pre className="mt-4 overflow-x-auto rounded-2xl border border-white/10 bg-black/40 p-4 text-sm text-gray-200"><code>{responseExample}</code></pre>
         </div>
-        <div className="rounded-3xl border border-white/10 bg-slate-950/70 p-8">
+        <div className="rounded-3xl border border-white/10 bg-slate-950/70 p-5 sm:p-8">
           <p className="text-sm uppercase tracking-[0.24em] text-gray-400">MCP setup</p>
           <pre className="mt-4 overflow-x-auto rounded-2xl border border-white/10 bg-black/40 p-4 text-sm text-gray-200"><code>{mcpConfig}</code></pre>
         </div>
       </section>
 
       <section className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-3xl border border-white/10 bg-slate-950/70 p-8">
+        <div className="rounded-3xl border border-white/10 bg-slate-950/70 p-5 sm:p-8">
           <p className="text-sm uppercase tracking-[0.24em] text-gray-400">Node.js</p>
           <pre className="mt-4 overflow-x-auto rounded-2xl border border-white/10 bg-black/40 p-4 text-sm text-gray-200"><code>{nodeExample}</code></pre>
         </div>
-        <div className="rounded-3xl border border-white/10 bg-slate-950/70 p-8">
+        <div className="rounded-3xl border border-white/10 bg-slate-950/70 p-5 sm:p-8">
           <p className="text-sm uppercase tracking-[0.24em] text-gray-400">curl</p>
           <pre className="mt-4 overflow-x-auto rounded-2xl border border-white/10 bg-black/40 p-4 text-sm text-gray-200"><code>{curlExample}</code></pre>
         </div>

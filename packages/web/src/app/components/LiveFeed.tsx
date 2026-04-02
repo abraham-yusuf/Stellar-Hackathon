@@ -59,11 +59,11 @@ export default function LiveFeed() {
   const rows = useMemo(() => entries, [entries]);
 
   return (
-    <div className="rounded-3xl border border-white/10 bg-slate-950/80 p-6 shadow-glow">
-      <div className="mb-5 flex items-center justify-between gap-4">
+    <div className="rounded-3xl border border-white/10 bg-slate-950/80 p-4 shadow-glow sm:p-6">
+      <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-sm uppercase tracking-[0.28em] text-purple-300">Live feed</p>
-          <h3 className="mt-2 text-2xl font-semibold text-white">Fresh paid queries streaming from the API</h3>
+          <h3 className="mt-2 text-xl font-semibold text-white sm:text-2xl">Fresh paid queries streaming from the API</h3>
         </div>
         <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-emerald-300">
           <span className={`h-2.5 w-2.5 rounded-full ${connected ? "animate-pulse bg-emerald-400" : "bg-gray-500"}`} />

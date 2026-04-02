@@ -73,11 +73,11 @@ export default function SearchDemo() {
   }
 
   return (
-    <div className="rounded-3xl border border-purple-500/20 bg-slate-950/80 p-6 shadow-glow">
+    <div className="rounded-3xl border border-purple-500/20 bg-slate-950/80 p-4 shadow-glow sm:p-6">
       <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="text-sm uppercase tracking-[0.28em] text-purple-300">Search demo</p>
-          <h2 className="mt-2 text-3xl font-semibold text-white">Try the testnet endpoint from the browser</h2>
+          <h2 className="mt-2 text-2xl font-semibold text-white sm:text-3xl">Try the testnet endpoint from the browser</h2>
           <p className="mt-3 max-w-2xl text-sm text-gray-400">
             This demo calls <span className="font-mono text-gray-200">/search/testnet</span> directly. For local demos, run the API with <span className="font-mono text-gray-200">PAYWALL_DISABLED=true</span>.
           </p>
@@ -117,7 +117,7 @@ export default function SearchDemo() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+        <div className="min-w-0 rounded-2xl border border-white/10 bg-white/5 p-4">
           <div className="flex flex-col gap-2 border-b border-white/10 pb-4 md:flex-row md:items-center md:justify-between">
             <div>
               <p className="text-xs uppercase tracking-[0.24em] text-gray-400">Results</p>
