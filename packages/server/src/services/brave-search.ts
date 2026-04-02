@@ -1,7 +1,7 @@
 import { Env } from "../config/env.js";
 import { logger } from "../utils/logger.js";
 
-const BRAVE_SEARCH_URL = "https://api.search.brave.com/res/v1/web/search";
+const TAVILY_SEARCH_URL = "https://api.tavily.com/search";
 
 export interface SearchResult {
   title: string;
@@ -18,21 +18,14 @@ export interface SearchResponse {
   mock?: boolean;
 }
 
-interface BraveSearchApiResponse {
-  web?: {
-    results?: Array<{
-      title?: string;
-      url?: string;
-      description?: string;
-      age?: string;
-      profile?: {
-        img?: string;
-      };
-      meta_url?: {
-        favicon?: string;
-      };
-    }>;
-  };
+interface TavilySearchApiResponse {
+  query: string;
+  results?: Array<{
+    title?: string;
+    url?: string;
+    content?: string;
+    published_date?: string;
+  }>;
 }
 
 function buildMockResults(query: string, count: number): SearchResponse {
@@ -55,12 +48,12 @@ function buildMockResults(query: string, count: number): SearchResponse {
       title: `${query} integration walkthrough`,
       url: `https://example.com/search/${encodeURIComponent(query)}/integration-walkthrough`,
       description:
-        "Sample documentation result for local demos when the Brave Search API key is not configured.",
+        "Sample documentation result for local demos when the Tavily API key is not configured.",
       age: "1 week ago",
     },
   ];
 
-  logger.warn({ query }, "BRAVE_SEARCH_API_KEY not configured, returning mock search results");
+  logger.warn({ query }, "TAVILY_API_KEY not configured, returning mock search results");
 
   return {
     query,
@@ -75,27 +68,39 @@ export async function search(
   opts: { count?: number; freshness?: string } = {},
 ): Promise<SearchResponse> {
   const count = Math.min(Math.max(opts.count ?? Env.searchResultsCount, 1), 20);
-  const apiKey = Env.braveSearchApiKey;
+  const apiKey = Env.tavilyApiKey;
 
   if (!apiKey) {
     return buildMockResults(query, count);
   }
 
-  const params = new URLSearchParams({
-    q: query,
-    count: String(count),
-    result_filter: "web",
-  });
+  const body: Record<string, unknown> = {
+    api_key: apiKey,
+    query,
+    max_results: count,
+    search_depth: "basic",
+  };
 
   if (opts.freshness) {
-    params.set("freshness", opts.freshness);
+    const freshnessMap: Record<string, number> = {
+      pd: 1,
+      pw: 7,
+      pm: 30,
+      py: 365,
+    };
+    const days = freshnessMap[opts.freshness];
+    if (days !== undefined) {
+      body.days = days;
+    }
   }
 
-  const response = await fetch(`${BRAVE_SEARCH_URL}?${params.toString()}`, {
+  const response = await fetch(TAVILY_SEARCH_URL, {
+    method: "POST",
     headers: {
+      "Content-Type": "application/json",
       Accept: "application/json",
-      "X-Subscription-Token": apiKey,
     },
+    body: JSON.stringify(body),
   });
 
   if (!response.ok) {
@@ -112,21 +117,20 @@ export async function search(
       }
     }
 
-    throw new Error(`Brave Search API error (${response.status}): ${detail}`);
+    throw new Error(`Tavily Search API error (${response.status}): ${detail}`);
   }
 
-  const payload = (await response.json()) as BraveSearchApiResponse;
-  const results = (payload.web?.results ?? [])
-    .filter((entry): entry is Required<Pick<SearchResult, "title" | "url" | "description">> & typeof entry => {
-      return Boolean(entry.title && entry.url && entry.description);
+  const payload = (await response.json()) as TavilySearchApiResponse;
+  const results = (payload.results ?? [])
+    .filter((entry): entry is Required<Pick<typeof entry, "title" | "url" | "content">> => {
+      return Boolean(entry.title && entry.url && entry.content);
     })
     .slice(0, count)
     .map((entry) => ({
       title: entry.title,
       url: entry.url,
-      description: entry.description,
-      age: entry.age,
-      favicon: entry.meta_url?.favicon ?? entry.profile?.img,
+      description: entry.content,
+      age: entry.published_date,
     }));
 
   return {
