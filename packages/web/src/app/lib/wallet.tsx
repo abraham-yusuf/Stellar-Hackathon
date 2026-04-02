@@ -3,13 +3,11 @@
 import type { ReactNode } from "react";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import {
-  getAddress,
-  getNetworkDetails,
-  isAllowed,
-  isConnected,
-  setAllowed,
-  signTransaction,
-} from "@stellar/freighter-api";
+  Networks,
+  StellarWalletsKit,
+} from "@creit.tech/stellar-wallets-kit";
+import { FREIGHTER_ID } from "@creit.tech/stellar-wallets-kit/modules/freighter";
+import { defaultModules } from "@creit.tech/stellar-wallets-kit/modules/utils";
 
 type WalletState = {
   connected: boolean;
@@ -26,18 +24,21 @@ type WalletState = {
 
 const WalletContext = createContext<WalletState | null>(null);
 
-function extractFreighterErrorMessage(result: { error?: { message?: string } } | null | undefined): string | null {
-  return result?.error?.message ?? null;
-}
+let walletKitInitialized = false;
 
-function withFreighterError(result: { error?: { message?: string } }, fallback: string): void {
-  const message = extractFreighterErrorMessage(result);
-  if (message !== null) {
-    throw new Error(message || fallback);
-  }
+function initWalletKit() {
+  if (walletKitInitialized) return;
+  StellarWalletsKit.init({
+    network: Networks.TESTNET,
+    selectedWalletId: FREIGHTER_ID,
+    modules: defaultModules(),
+  });
+  walletKitInitialized = true;
 }
 
 export function WalletProvider({ children }: { children: ReactNode }) {
+  initWalletKit();
+
   const [connected, setConnected] = useState(false);
   const [loading, setLoading] = useState(true);
   const [address, setAddress] = useState<string | null>(null);
@@ -50,31 +51,10 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     setError(null);
 
     try {
-      const connectedResult = await isConnected();
-      withFreighterError(connectedResult, "Unable to detect Freighter.");
-
-      if (!connectedResult.isConnected) {
-        setConnected(false);
-        setAddress(null);
-        setNetworkPassphrase(null);
-        setNetworkName(null);
-        return;
-      }
-
-      const allowedResult = await isAllowed();
-      withFreighterError(allowedResult, "Unable to check wallet permissions.");
-
-      if (!allowedResult.isAllowed) {
-        setConnected(false);
-        setAddress(null);
-        setNetworkPassphrase(null);
-        setNetworkName(null);
-        return;
-      }
-
-      const [addressResult, networkResult] = await Promise.all([getAddress(), getNetworkDetails()]);
-      withFreighterError(addressResult, "Unable to read wallet address.");
-      withFreighterError(networkResult, "Unable to read wallet network.");
+      const [addressResult, networkResult] = await Promise.all([
+        StellarWalletsKit.getAddress(),
+        StellarWalletsKit.getNetwork(),
+      ]);
 
       setConnected(true);
       setAddress(addressResult.address);
@@ -100,27 +80,19 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     setError(null);
 
     try {
-      const connectedResult = await isConnected();
-      withFreighterError(connectedResult, "Unable to detect Freighter.");
-
-      if (!connectedResult.isConnected) {
-        throw new Error("Freighter extension not detected. Install it from freighter.app.");
-      }
-
-      const allowResult = await setAllowed();
-      withFreighterError(allowResult, "Wallet permission request failed.");
-
-      if (!allowResult.isAllowed) {
-        throw new Error("Wallet access was not granted.");
-      }
+      StellarWalletsKit.setWallet(FREIGHTER_ID);
+      await StellarWalletsKit.authModal();
 
       await refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Wallet connection failed.");
     } finally {
       setLoading(false);
     }
   }, [refresh]);
 
   const disconnect = useCallback(() => {
+    void StellarWalletsKit.disconnect().catch(() => undefined);
     setConnected(false);
     setAddress(null);
     setNetworkPassphrase(null);
@@ -134,12 +106,10 @@ export function WalletProvider({ children }: { children: ReactNode }) {
         throw new Error("Connect your wallet before signing.");
       }
 
-      const signed = await signTransaction(xdr, {
+      const signed = await StellarWalletsKit.signTransaction(xdr, {
         networkPassphrase: networkPassphrase ?? undefined,
         address,
       });
-
-      withFreighterError(signed, "Transaction signing failed.");
       return signed.signedTxXdr;
     },
     [address, connected, networkPassphrase],
