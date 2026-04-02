@@ -66,13 +66,13 @@ export default function WalletPaymentPanel({ onPaid }: { onPaid: (hash: string) 
 
     if (!wallet.connected || !wallet.address) {
       setStage("error");
-      setError("Connect Freighter wallet first.");
+      setError("Connect wallet first.");
       return;
     }
 
     if (networkMismatch) {
       setStage("error");
-      setError("Wallet network mismatch. Switch Freighter to Stellar testnet.");
+      setError("Wallet network mismatch. Switch wallet to Stellar testnet.");
       return;
     }
 
@@ -107,7 +107,7 @@ export default function WalletPaymentPanel({ onPaid }: { onPaid: (hash: string) 
       <h2 className="mt-2 text-2xl font-semibold text-white sm:text-3xl">Send real USDC on Stellar Testnet</h2>
 
       <div className="mt-4 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-gray-300">
-        <p>Flow: connect wallet → verify trustline → sign tx in Freighter → submit → confirm.</p>
+        <p>Flow: connect wallet → verify trustline → sign tx in wallet → submit → confirm.</p>
         {config ? (
           <dl className="mt-2 flex flex-wrap items-center gap-x-2 text-xs text-gray-400">
             <dt>Recipient:</dt>
@@ -158,7 +158,7 @@ export default function WalletPaymentPanel({ onPaid }: { onPaid: (hash: string) 
             Wallet: <span className="font-mono text-gray-200">{shortenAddress(wallet.address, 8)}</span>
           </p>
         ) : null}
-        {networkMismatch ? <p className="text-amber-200">Freighter is not on testnet. Switch network before paying.</p> : null}
+        {networkMismatch ? <p className="text-amber-200">Wallet is not on testnet. Switch network before paying.</p> : null}
         {wallet.error ? <p className="text-rose-200">Wallet: {wallet.error}</p> : null}
         {configError ? <p className="text-rose-200">Config: {configError}</p> : null}
         {error ? <p className="text-rose-200">Error: {error}</p> : null}
