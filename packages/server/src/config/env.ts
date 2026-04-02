@@ -101,8 +101,8 @@ export class Env {
     return parseNumber(readVar("PORT"), DEFAULT_PORT);
   }
 
-  static get braveSearchApiKey(): string | undefined {
-    return readVar("BRAVE_SEARCH_API_KEY");
+  static get tavilyApiKey(): string | undefined {
+    return readVar("TAVILY_API_KEY");
   }
 
   static get paymentPrice(): string {
