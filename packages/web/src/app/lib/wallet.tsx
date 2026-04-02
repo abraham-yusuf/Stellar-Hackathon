@@ -26,13 +26,13 @@ type WalletState = {
 
 const WalletContext = createContext<WalletState | null>(null);
 
-function readFreighterError(result: { error?: { message?: string } } | null | undefined): string | null {
+function extractFreighterErrorMessage(result: { error?: { message?: string } } | null | undefined): string | null {
   return result?.error?.message ?? null;
 }
 
 function withFreighterError(result: { error?: { message?: string } }, fallback: string): void {
-  const message = readFreighterError(result);
-  if (message) {
+  const message = extractFreighterErrorMessage(result);
+  if (message !== null) {
     throw new Error(message || fallback);
   }
 }

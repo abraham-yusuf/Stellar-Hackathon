@@ -21,7 +21,9 @@ const DEFAULTS = {
   defaultAmount: "0.01",
 };
 
-function readEnv(name: string, fallback?: string): string {
+const SUPPORTED_NETWORK = "testnet";
+
+function readEnvWithFallback(name: string, fallback?: string): string {
   const value = process.env[name]?.trim();
   if (value) {
     return value;
@@ -33,16 +35,16 @@ function readEnv(name: string, fallback?: string): string {
 }
 
 export function getPublicStellarConfig(): { config?: PublicStellarConfig; error?: string } {
-  const serverUrl = readEnv("NEXT_PUBLIC_SERVER_URL", DEFAULTS.serverUrl);
-  const horizonUrl = readEnv("NEXT_PUBLIC_STELLAR_TESTNET_HORIZON_URL", DEFAULTS.horizonUrl);
-  const networkName = readEnv("NEXT_PUBLIC_STELLAR_NETWORK", DEFAULTS.networkName).toLowerCase();
-  const usdcAssetCode = readEnv("NEXT_PUBLIC_STELLAR_USDC_ASSET_CODE", DEFAULTS.usdcAssetCode);
-  const usdcIssuer = readEnv("NEXT_PUBLIC_STELLAR_USDC_ISSUER");
-  const payToAddress = readEnv("NEXT_PUBLIC_STELLAR_PAY_TO_ADDRESS");
-  const explorerBaseUrl = readEnv("NEXT_PUBLIC_STELLAR_EXPLORER_TX_BASE_URL", DEFAULTS.explorerBaseUrl);
-  const defaultAmount = readEnv("NEXT_PUBLIC_STELLAR_PAYMENT_DEFAULT_AMOUNT", DEFAULTS.defaultAmount);
+  const serverUrl = readEnvWithFallback("NEXT_PUBLIC_SERVER_URL", DEFAULTS.serverUrl);
+  const horizonUrl = readEnvWithFallback("NEXT_PUBLIC_STELLAR_TESTNET_HORIZON_URL", DEFAULTS.horizonUrl);
+  const networkName = readEnvWithFallback("NEXT_PUBLIC_STELLAR_NETWORK", DEFAULTS.networkName).toLowerCase();
+  const usdcAssetCode = readEnvWithFallback("NEXT_PUBLIC_STELLAR_USDC_ASSET_CODE", DEFAULTS.usdcAssetCode);
+  const usdcIssuer = readEnvWithFallback("NEXT_PUBLIC_STELLAR_USDC_ISSUER");
+  const payToAddress = readEnvWithFallback("NEXT_PUBLIC_STELLAR_PAY_TO_ADDRESS");
+  const explorerBaseUrl = readEnvWithFallback("NEXT_PUBLIC_STELLAR_EXPLORER_TX_BASE_URL", DEFAULTS.explorerBaseUrl);
+  const defaultAmount = readEnvWithFallback("NEXT_PUBLIC_STELLAR_PAYMENT_DEFAULT_AMOUNT", DEFAULTS.defaultAmount);
 
-  if (networkName !== "testnet") {
+  if (networkName !== SUPPORTED_NETWORK) {
     return { error: "Only Stellar testnet is supported by this wallet payment flow." };
   }
 

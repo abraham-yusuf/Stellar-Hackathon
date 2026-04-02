@@ -2,6 +2,10 @@ import { Asset, BASE_FEE, Horizon, Networks, Operation, StrKey, Transaction, Tra
 import { getPublicStellarConfig } from "./stellarConfig";
 import { parseUsdcAmount } from "./stellarUtils";
 
+// Poll for up to ~12 seconds to surface a confirmed tx hash in the UI quickly.
+const TX_CONFIRMATION_MAX_ATTEMPTS = 8;
+const TX_CONFIRMATION_RETRY_DELAY_MS = 1500;
+
 export type PaymentPreflight = {
   sourceAddress: string;
   sourceUsdcBalance: string;
@@ -115,12 +119,13 @@ async function buildAndSignTransaction(
 }
 
 async function waitForTransactionConfirmation(horizon: Horizon.Server, hash: string): Promise<{ hash: string; ledger?: number }> {
-  for (let attempt = 0; attempt < 8; attempt += 1) {
+  for (let attempt = 0; attempt < TX_CONFIRMATION_MAX_ATTEMPTS; attempt += 1) {
     try {
       const tx = await horizon.transactions().transaction(hash).call();
+      // `ledger_attr` comes from Horizon's transaction response shape.
       return { hash, ledger: tx.ledger_attr };
     } catch {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await new Promise((resolve) => setTimeout(resolve, TX_CONFIRMATION_RETRY_DELAY_MS));
     }
   }
 

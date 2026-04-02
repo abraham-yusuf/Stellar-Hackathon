@@ -109,9 +109,12 @@ export default function WalletPaymentPanel({ onPaid }: { onPaid: (hash: string) 
       <div className="mt-4 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-gray-300">
         <p>Flow: connect wallet → verify trustline → sign tx in Freighter → submit → confirm.</p>
         {config ? (
-          <p className="mt-2 text-xs text-gray-400">
-            Recipient: <span className="font-mono text-gray-200">{shortenAddress(config.payToAddress, 8)}</span> • Asset: <span className="font-mono text-gray-200">{config.usdcAssetCode}</span>
-          </p>
+          <dl className="mt-2 flex flex-wrap items-center gap-x-2 text-xs text-gray-400">
+            <dt>Recipient:</dt>
+            <dd className="font-mono text-gray-200">{shortenAddress(config.payToAddress, 8)}</dd>
+            <dt>Asset:</dt>
+            <dd className="font-mono text-gray-200">{config.usdcAssetCode}</dd>
+          </dl>
         ) : null}
       </div>
 

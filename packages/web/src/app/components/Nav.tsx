@@ -13,7 +13,7 @@ const links = [
 export default function Nav() {
   const wallet = useWallet();
   const walletLabel = wallet.connected && wallet.address
-    ? `${shortenAddress(wallet.address, 6)} • ${wallet.networkName ?? "unknown"}`
+    ? `${shortenAddress(wallet.address, 6)} - ${wallet.networkName ?? "unknown"}`
     : "Wallet disconnected";
 
   return (
@@ -44,7 +44,9 @@ export default function Nav() {
             {wallet.loading ? "Wallet..." : wallet.connected ? "Disconnect" : "Connect Wallet"}
           </button>
         </nav>
-        <div className="w-full text-xs text-gray-400 sm:w-auto">{walletLabel}</div>
+        <div className="w-full text-xs text-gray-400 sm:w-auto" role="status" aria-live="polite" aria-atomic="true">
+          {walletLabel}
+        </div>
       </div>
     </header>
   );
