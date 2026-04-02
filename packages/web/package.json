@@ -6,9 +6,12 @@
     "dev": "next dev --port 3000",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "node --test --experimental-strip-types src/app/lib/stellarUtils.test.mts"
   },
   "dependencies": {
+    "@stellar/freighter-api": "6.0.1",
+    "@stellar/stellar-sdk": "15.0.1",
     "next": "15.3.9",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
