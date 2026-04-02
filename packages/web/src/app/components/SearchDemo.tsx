@@ -23,7 +23,7 @@ const baseSteps = ["⏳ Sending request...", "🔐 402 received", "✅ Fetching 
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-export default function SearchDemo() {
+export default function SearchDemo({ disabled = false }: { disabled?: boolean }) {
   const [query, setQuery] = useState("stellar x402" );
   const [results, setResults] = useState<SearchResult[]>([]);
   const [statusSteps, setStatusSteps] = useState<string[]>([]);
@@ -94,12 +94,13 @@ export default function SearchDemo() {
         />
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || disabled}
           className="inline-flex h-12 items-center justify-center rounded-2xl bg-purple-500 px-5 text-sm font-semibold text-white transition hover:bg-purple-400 disabled:cursor-not-allowed disabled:bg-purple-900"
         >
-          {loading ? "Searching..." : "Search"}
+          {disabled ? "Pay to unlock search" : loading ? "Searching..." : "Search"}
         </button>
       </form>
+      {disabled ? <p className="mt-3 text-sm text-amber-200">Complete one successful USDC testnet payment to unlock browser search in this session.</p> : null}
 
       <div className="mt-5 grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
         <div className="rounded-2xl border border-white/10 bg-white/5 p-4">

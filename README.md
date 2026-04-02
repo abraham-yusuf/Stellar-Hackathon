@@ -19,10 +19,10 @@ flowchart LR
 ## Components
 
 - `packages/server` — Express-based x402 search API server with Stellar testnet/mainnet paywall support, Brave Search integration, discovery, health, and live stats.
-- `packages/web` — planned Next.js dashboard for search analytics, API playground, onboarding, and query monitoring.
+- `packages/web` — Next.js dashboard with live stats, API playground, and Stellar Testnet Freighter wallet payment flow for USDC demo transactions.
 - `packages/mcp` — planned MCP server so agents can consume StellarSearch through MCP-native tools.
 
-Only the server foundation is implemented in this task. The dashboard and MCP server are documented as upcoming monorepo packages.
+The server and dashboard foundations are implemented in this task. MCP server work remains upcoming.
 
 ## Architecture
 
@@ -49,6 +49,30 @@ Fill the required environment variables:
 - `BRAVE_SEARCH_API_KEY` — optional but recommended. Get a free key at <https://api.search.brave.com/>.
 - `TESTNET_FACILITATOR_URL` / `TESTNET_FACILITATOR_API_KEY` — facilitator configuration for x402 verification.
 
+For wallet payment demo in `packages/web`, also configure:
+
+- `NEXT_PUBLIC_STELLAR_NETWORK=testnet`
+- `NEXT_PUBLIC_STELLAR_TESTNET_HORIZON_URL=https://horizon-testnet.stellar.org`
+- `NEXT_PUBLIC_STELLAR_USDC_ASSET_CODE=USDC`
+- `NEXT_PUBLIC_STELLAR_USDC_ISSUER=<testnet usdc issuer G...>`
+- `NEXT_PUBLIC_STELLAR_PAY_TO_ADDRESS=<recipient G...>`
+- `NEXT_PUBLIC_STELLAR_EXPLORER_TX_BASE_URL=https://stellar.expert/explorer/testnet/tx`
+- `NEXT_PUBLIC_STELLAR_PAYMENT_DEFAULT_AMOUNT=0.01`
+
+Then run the web app with Freighter connected to Stellar Testnet:
+
+```bash
+cp packages/web/.env.local.example packages/web/.env.local
+pnpm --filter @stellarsearch/web dev
+```
+
+Wallet prerequisites:
+
+- Freighter browser extension installed (`https://freighter.app`)
+- Wallet account funded on testnet (Friendbot)
+- Wallet has trustline for configured USDC issuer/code
+- Wallet has enough XLM for fees and USDC for transfer amount
+
 Then start the API server:
 
 ```bash
@@ -69,6 +93,7 @@ Core values:
 - `PAYMENT_PRICE` — defaults to `0.01` USDC per search.
 - `SEARCH_RESULTS_COUNT` — default search result count, clamped to `1-20`.
 - `PAYWALL_DISABLED=true` — disables x402 enforcement for local testing.
+- `NEXT_PUBLIC_STELLAR_USDC_ISSUER` / `NEXT_PUBLIC_STELLAR_PAY_TO_ADDRESS` — required by web wallet flow to construct and submit USDC testnet transactions.
 
 ## API
 

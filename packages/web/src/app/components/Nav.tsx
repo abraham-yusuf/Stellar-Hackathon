@@ -1,4 +1,8 @@
+"use client";
+
 import Link from "next/link";
+import { useWallet } from "../lib/wallet";
+import { shortenAddress } from "../lib/stellarUtils";
 
 const links = [
   { href: "/", label: "Home" },
@@ -7,6 +11,11 @@ const links = [
 ];
 
 export default function Nav() {
+  const wallet = useWallet();
+  const walletLabel = wallet.connected && wallet.address
+    ? `${shortenAddress(wallet.address, 6)} • ${wallet.networkName ?? "unknown"}`
+    : "Wallet disconnected";
+
   return (
     <header className="sticky top-0 z-50 border-b border-gray-800 bg-gray-900/90 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-6">
@@ -26,7 +35,16 @@ export default function Nav() {
               {link.label}
             </Link>
           ))}
+          <button
+            type="button"
+            onClick={() => (wallet.connected ? wallet.disconnect() : wallet.connect())}
+            disabled={wallet.loading}
+            className="whitespace-nowrap rounded-full border border-purple-500/30 bg-purple-500/10 px-4 py-2 text-purple-200 transition hover:bg-purple-500/20 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {wallet.loading ? "Wallet..." : wallet.connected ? "Disconnect" : "Connect Wallet"}
+          </button>
         </nav>
+        <div className="w-full text-xs text-gray-400 sm:w-auto">{walletLabel}</div>
       </div>
     </header>
   );
