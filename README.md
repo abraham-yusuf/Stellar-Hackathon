@@ -238,3 +238,64 @@ Submission expectations covered by this repository foundation:
 - real Stellar testnet/mainnet x402 payment rails
 - hackathon-friendly mock mode for demo resilience
 - a path to agent-native integrations through dashboard + MCP packages
+
+## Deploy to Render (Docker)
+
+This repository now includes Dockerfiles for:
+
+- `packages/server` (`packages/server/Dockerfile`)
+- `packages/web` (`packages/web/Dockerfile`)
+- `packages/mcp` (`packages/mcp/Dockerfile`)
+
+And a Render blueprint file: `render.yaml`.
+
+### 1) Push your code
+
+Push this repository (including `render.yaml`) to GitHub.
+
+### 2) Create services from Blueprint
+
+In Render:
+
+1. Go to **New +** → **Blueprint**
+2. Connect your GitHub repository
+3. Select this repo and branch
+4. Render will detect `render.yaml` and create 3 services:
+   - `stellarsearch-server` (Web Service)
+   - `stellarsearch-web` (Web Service)
+   - `stellarsearch-mcp` (Worker)
+
+### 3) Set required environment variables
+
+After the services are created, fill variables marked `sync: false` in Render dashboard.
+
+#### `stellarsearch-server` required
+
+- `TESTNET_SERVER_STELLAR_ADDRESS`
+- `BRAVE_SEARCH_API_KEY` (optional, mock results are used if empty)
+- `TESTNET_FACILITATOR_API_KEY` (optional)
+- `MAINNET_SERVER_STELLAR_ADDRESS` (optional, for mainnet endpoint)
+- `MAINNET_FACILITATOR_API_KEY` (optional)
+- `CORS_ORIGINS` (set to your web URL, e.g. `https://stellarsearch-web.onrender.com`)
+
+#### `stellarsearch-web` required
+
+- `NEXT_PUBLIC_SERVER_URL` (set to your deployed server URL, e.g. `https://stellarsearch-server.onrender.com`)
+- `NEXT_PUBLIC_STELLAR_USDC_ISSUER`
+- `NEXT_PUBLIC_STELLAR_PAY_TO_ADDRESS`
+
+#### `stellarsearch-mcp` required
+
+- `STELLAR_SECRET_KEY`
+- `SEARCH_API_URL` (set to your deployed server URL)
+- `X402_FACILITATOR_API_KEY` (optional)
+
+### 4) Trigger deploy
+
+Deploy all services from Render dashboard after variables are set.
+
+### Notes
+
+- `stellarsearch-web` listens on port `3000` in container.
+- `stellarsearch-server` listens on port `3001` in container.
+- `stellarsearch-mcp` is configured as a **Worker** (no public HTTP endpoint).

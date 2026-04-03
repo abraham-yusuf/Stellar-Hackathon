@@ -1,0 +1,90 @@
+services:
+  - type: web
+    name: stellarsearch-server
+    runtime: docker
+    dockerfilePath: ./packages/server/Dockerfile
+    rootDir: .
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "3001"
+      - key: TESTNET_SERVER_STELLAR_ADDRESS
+        sync: false
+      - key: TESTNET_FACILITATOR_URL
+        value: https://channels.openzeppelin.com/x402/testnet
+      - key: TESTNET_FACILITATOR_API_KEY
+        sync: false
+      - key: MAINNET_SERVER_STELLAR_ADDRESS
+        sync: false
+      - key: MAINNET_FACILITATOR_URL
+        value: https://channels.openzeppelin.com/x402/mainnet
+      - key: MAINNET_STELLAR_RPC_URL
+        value: https://mainnet.sorobanrpc.com
+      - key: MAINNET_FACILITATOR_API_KEY
+        sync: false
+      - key: PAYMENT_PRICE
+        value: "0.01"
+      - key: SEARCH_RESULTS_COUNT
+        value: "10"
+      - key: CORS_ORIGINS
+        sync: false
+      - key: LOG_LEVEL
+        value: info
+      - key: PAYWALL_DISABLED
+        value: "false"
+      - key: BRAVE_SEARCH_API_KEY
+        sync: false
+
+  - type: web
+    name: stellarsearch-web
+    runtime: docker
+    dockerfilePath: ./packages/web/Dockerfile
+    rootDir: .
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "3000"
+      - key: HOSTNAME
+        value: 0.0.0.0
+      - key: NEXT_PUBLIC_SERVER_URL
+        sync: false
+      - key: NEXT_PUBLIC_STELLAR_NETWORK
+        value: testnet
+      - key: NEXT_PUBLIC_STELLAR_TESTNET_HORIZON_URL
+        value: https://horizon-testnet.stellar.org
+      - key: NEXT_PUBLIC_STELLAR_USDC_ASSET_CODE
+        value: USDC
+      - key: NEXT_PUBLIC_STELLAR_USDC_ISSUER
+        sync: false
+      - key: NEXT_PUBLIC_STELLAR_PAY_TO_ADDRESS
+        sync: false
+      - key: NEXT_PUBLIC_STELLAR_EXPLORER_TX_BASE_URL
+        value: https://stellar.expert/explorer/testnet/tx
+      - key: NEXT_PUBLIC_STELLAR_PAYMENT_DEFAULT_AMOUNT
+        value: "0.01"
+
+  - type: worker
+    name: stellarsearch-mcp
+    runtime: docker
+    dockerfilePath: ./packages/mcp/Dockerfile
+    rootDir: .
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: STELLAR_SECRET_KEY
+        sync: false
+      - key: STELLAR_NETWORK
+        value: stellar:testnet
+      - key: SEARCH_API_URL
+        sync: false
+      - key: X402_FACILITATOR_URL
+        value: https://channels.openzeppelin.com/x402/testnet
+      - key: X402_FACILITATOR_API_KEY
+        sync: false
+      - key: MAX_PAYMENT_USDC
+        value: "0.10"
