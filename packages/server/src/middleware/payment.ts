@@ -44,7 +44,10 @@ function buildSearchMiddleware(netConfig: NetworkConfig): NetworkMiddleware {
       },
     },
     x402Server,
-    undefined,
+    {
+      appName: "StellarSearch",
+      testnet: netConfig.network === "stellar:testnet",
+    },
     undefined,
     true,
   );
