@@ -10,7 +10,30 @@ type DiscoveryResponse = {
 
 type NetworksStatus = "loading" | "ready" | "error";
 
-const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL ?? "http://localhost:3001";
+const DEFAULT_LOCAL_SERVER_URL = "http://localhost:3001";
+const DEFAULT_SEARCH_QUERY = "stellar x402";
+const DEFAULT_SEARCH_COUNT = 5;
+
+function getServerUrl(): string {
+  const configured = process.env.NEXT_PUBLIC_SERVER_URL?.trim();
+  if (configured) {
+    return configured;
+  }
+
+  if (typeof window !== "undefined" && window.location.hostname !== "localhost") {
+    return window.location.origin;
+  }
+
+  return DEFAULT_LOCAL_SERVER_URL;
+}
+
+function extractRoutePath(resource: string): string | null {
+  const [method, path] = resource.trim().split(/\s+/, 2);
+  if (method?.toUpperCase() !== "GET" || !path?.startsWith("/")) {
+    return null;
+  }
+  return path;
+}
 
 function routeLabel(path: string): string {
   if (path.endsWith("/testnet")) {
@@ -26,11 +49,12 @@ export default function TryClient() {
   const [paidHash, setPaidHash] = useState<string | null>(null);
   const [resources, setResources] = useState<string[]>([]);
   const [networksStatus, setNetworksStatus] = useState<NetworksStatus>("loading");
+  const serverUrl = useMemo(() => getServerUrl(), []);
 
   useEffect(() => {
     let cancelled = false;
 
-    fetch(`${SERVER_URL}/.well-known/x402`, { cache: "no-store" })
+    fetch(`${serverUrl}/.well-known/x402`, { cache: "no-store" })
       .then(async (res) => {
         if (!res.ok) {
           throw new Error(`Failed with status ${res.status}`);
@@ -40,13 +64,15 @@ export default function TryClient() {
       .then((data) => {
         if (cancelled) return;
         const paidResources = (data.resources ?? [])
-          .map((resource) => resource.replace(/^GET\s+/i, "").trim())
+          .map(extractRoutePath)
+          .filter((path): path is string => path !== null)
           .filter((path) => path.startsWith("/search/"));
         setResources(paidResources);
         setNetworksStatus("ready");
       })
-      .catch(() => {
+      .catch((error) => {
         if (cancelled) return;
+        console.error("Failed to load x402 discovery document for /try paywall.", error);
         setResources([]);
         setNetworksStatus("error");
       });
@@ -54,16 +80,21 @@ export default function TryClient() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [serverUrl]);
 
   const unlockLinks = useMemo(
     () =>
       resources.map((path) => ({
         path,
         label: routeLabel(path),
-        href: `${SERVER_URL}${path}?q=stellar%20x402&count=5`,
+        href: (() => {
+          const url = new URL(path, `${serverUrl}/`);
+          url.searchParams.set("q", DEFAULT_SEARCH_QUERY);
+          url.searchParams.set("count", String(DEFAULT_SEARCH_COUNT));
+          return url.toString();
+        })(),
       })),
-    [resources],
+    [resources, serverUrl],
   );
 
   return (
