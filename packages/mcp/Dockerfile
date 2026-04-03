@@ -10,6 +10,8 @@ RUN pnpm install --frozen-lockfile --filter @stellarsearch/mcp...
 
 COPY packages/mcp ./packages/mcp
 
+RUN pnpm --filter @stellarsearch/mcp build
+
 WORKDIR /app/packages/mcp
 ENV NODE_ENV=production
 
