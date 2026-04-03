@@ -35,6 +35,21 @@ function extractRoutePath(resource: string): string | null {
   return path;
 }
 
+function buildUnlockHref(serverUrl: string, path: string): string {
+  try {
+    const server = new URL(serverUrl);
+    const url = new URL(path, `${serverUrl}/`);
+    if (url.origin !== server.origin) {
+      return `${serverUrl}${path}`;
+    }
+    url.searchParams.set("q", DEFAULT_SEARCH_QUERY);
+    url.searchParams.set("count", String(DEFAULT_SEARCH_COUNT));
+    return url.toString();
+  } catch {
+    return `${serverUrl}${path}`;
+  }
+}
+
 function routeLabel(path: string): string {
   if (path.endsWith("/testnet")) {
     return "Unlock Content (Testnet)";
@@ -54,7 +69,7 @@ export default function TryClient() {
   useEffect(() => {
     let cancelled = false;
 
-    fetch(`${serverUrl}/.well-known/x402`, { cache: "no-store" })
+    fetch(new URL("/.well-known/x402", `${serverUrl}/`), { cache: "no-store" })
       .then(async (res) => {
         if (!res.ok) {
           throw new Error(`Failed with status ${res.status}`);
@@ -72,7 +87,7 @@ export default function TryClient() {
       })
       .catch((error) => {
         if (cancelled) return;
-        console.error("Failed to load x402 discovery document for /try paywall.", error);
+        console.error(`Failed to load x402 discovery document from ${serverUrl}/.well-known/x402.`, error);
         setResources([]);
         setNetworksStatus("error");
       });
@@ -87,12 +102,7 @@ export default function TryClient() {
       resources.map((path) => ({
         path,
         label: routeLabel(path),
-        href: (() => {
-          const url = new URL(path, `${serverUrl}/`);
-          url.searchParams.set("q", DEFAULT_SEARCH_QUERY);
-          url.searchParams.set("count", String(DEFAULT_SEARCH_COUNT));
-          return url.toString();
-        })(),
+        href: buildUnlockHref(serverUrl, path),
       })),
     [resources, serverUrl],
   );
